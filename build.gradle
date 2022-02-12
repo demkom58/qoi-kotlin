@@ -29,6 +29,12 @@ java {
     withSourcesJar()
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 tasks.named('jar') {
     manifest {
         attributes(
