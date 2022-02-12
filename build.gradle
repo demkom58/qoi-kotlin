@@ -1,5 +1,7 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+    id 'maven-publish'
+    id 'java-library'
     id 'java'
 }
 
@@ -9,7 +11,7 @@ version '1.0-SNAPSHOT'
 compileJava.options.encoding = 'UTF-8'
 
 repositories {
-    mavenCentral()
+    mavenLocal()
     mavenCentral()
 }
 
@@ -21,4 +23,38 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+java {
+    withSourcesJar()
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Build-date': new Date(),
+                'Created-By': 'demkom58'
+        )
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/demkom58/qoi-kotlin")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
 }
